@@ -11,7 +11,6 @@ let particles = [];
 let ballRadius = 80;
 let tremble = false;
 let trembleAngle = 2;
-let second = millis() / 1000;
 
 function setup() {
   let canvas = createCanvas(800, 500);
