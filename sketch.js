@@ -11,6 +11,7 @@ let particles = [];
 let ballRadius = 80;
 let tremble = false;
 let trembleAngle = 2;
+let second = millis() / 1000;
 
 function setup() {
   let canvas = createCanvas(800, 500);
@@ -38,8 +39,13 @@ function draw() {
   text(
     "AVOID the attacking particles :)\nClick the KEYBOARD to restart",
     250,
-    20
-  );
+    20);
+  
+  fill(255, 20, 147);
+  textFont("Caveat Brush");
+  textSize(20);
+  text("Score:"+ frameCount,700,30) ; 
+ 
 
   let dx = mouseX - px;
   let speed1 = constrain(dx, -60, 60) * 0.8;
@@ -59,8 +65,8 @@ function draw() {
   let trembleX = 0;
   let trembleY = 0;
   if (tremble) {
-    trembleX = sin(frameCount * 30) * trembleAngle * 2;
-    trembleY = sin(frameCount * 20) * trembleAngle * 2;
+    trembleX = sin(frameCount * 30) * trembleAngle * 1.1;
+    trembleY = sin(frameCount * 20) * trembleAngle * 1.1;
     angle += trembleY;
   }
 
@@ -201,13 +207,13 @@ function updateParticles() {
 
     let centerX = mouseX;
     if (tremble) {
-      centerX = mouseX + sin(frameCount * 30) * trembleAngle * 2;
+      centerX = mouseX + sin(frameCount * 30) *trembleAngle  * 1.1;
     } else {
       centerX = mouseX;
     }
     let centerY = mouseY;
     if (tremble) {
-      centerY = mouseY + sin(frameCount * 30) * trembleAngle * 2;
+      centerY = mouseY + sin(frameCount * 30) * trembleAngle * 1.1;
     } else {
       centerY = mouseY;
     }
