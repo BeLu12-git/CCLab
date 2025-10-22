@@ -6,45 +6,40 @@ let colorG = 192;
 let colorB = 203;
 let c = 160;
 let d = -20;
-let colorchange = true;
-let particles = [];
 let ballRadius = 80;
 let tremble = false;
 let trembleAngle = 2;
+let particleX, particleY, particleVY, particleSize, particleCol;
 
 function setup() {
   let canvas = createCanvas(800, 500);
   canvas.parent("p5-canvas-container");
   background(220);
-
   angleMode(DEGREES);
   px = mouseX;
   py = mouseY;
   trail = createGraphics(width, height);
+  newParticle();
 }
 function draw() {
   background(255);
   for (let x = 0; x < width + 10; x += 40) {
-    for (let y = 0; y < height; y += 40) {
+    for (let y = 0; y < height ; y += 40) {
       noStroke();
-      fill(random(250, 255), random(0, 200), random(150, 250), 99.5);
+      fill(random(200, 255), random(0, 200), random(150, 250),99.9999);
       circle(x, y, 10);
     }
   }
+  
 
   fill(255, 20, 147);
   textFont("Caveat Brush");
   textSize(25);
   text(
-    "AVOID the attacking particles :)\nClick the KEYBOARD to restart",
+    "Click the KEYBOARD to clean up for Yarnie",
     250,
     20);
   
-  fill(255, 20, 147);
-  textFont("Caveat Brush");
-  textSize(20);
-  text("Score:"+ frameCount,700,30) ; 
- 
 
   let dx = mouseX - px;
   let speed1 = constrain(dx, -60, 60) * 0.8;
@@ -57,7 +52,7 @@ function draw() {
   image(trail, 0, 0);
 
   tremble = false;
-  if (mouseY + 20 > height / 2) {
+  if (mouseY  > height / 2) {
     tremble = true;
   }
 
@@ -76,9 +71,24 @@ function draw() {
   limbs(0, 0);
   pop();
 
-  updateParticles();
-  if (frameCount % 30 == 0) {
-    Particles();
+  fill(particleCol);
+  noStroke();
+  circle(particleX, particleY, particleSize);
+  particleY += particleVY;
+
+  
+  if (dist(particleX, particleY, mouseX, mouseY) < ballRadius) {
+    colorR = random(200, 255);
+    colorG = random(0, 150);
+    colorB = random(0, 150);
+    ballRadius += 1;
+    trembleAngle += 0.2;
+    newParticle(); 
+  }
+
+ 
+  if (particleY + particleSize / 2 < 0) {
+    newParticle();
   }
 }
 function drawBall(x, y, colorR, colorG, colorB) {
@@ -86,13 +96,8 @@ function drawBall(x, y, colorR, colorG, colorB) {
 
   //ball
   noStroke();
-  if (colorchange) {
-    fill(colorR, colorG, colorB);
-  } else {
-    fill(139, 0, 0);
-  }
+  fill(colorR, colorG, colorB);
   circle(x, y, ballRadius * 2);
-
   stroke(0);
   noFill();
 
@@ -154,7 +159,6 @@ function drawBall(x, y, colorR, colorG, colorB) {
   pop();
 }
 function limbs(x, y) {
-  rotate(angle);
   let swing = sin(frameCount * 3) * 20;
   let lift = cos(frameCount * 2) * 10;
 
@@ -183,51 +187,12 @@ function limbs(x, y) {
   );
 }
 
-function Particles() {
-  let p = {
-    x: random(width),
-    y: height,
-    vy: random(-8, -5),
-    size: random(10, 25),
-    col: color(random(150, 255), random(80, 200), random(120, 255)),
-  };
-  particles[particles.length] = p;
-}
-
-function updateParticles() {
-  let newParticles = [];
-  for (let i = 0; i < particles.length; i++) {
-    let p = particles[i];
-    p.y += p.vy;
-
-    fill(p.col);
-    noStroke();
-    circle(p.x, p.y, p.size);
-
-    let centerX = mouseX;
-    if (tremble) {
-      centerX = mouseX + sin(frameCount * 30) *trembleAngle  * 1.1;
-    } else {
-      centerX = mouseX;
-    }
-    let centerY = mouseY;
-    if (tremble) {
-      centerY = mouseY + sin(frameCount * 30) * trembleAngle * 1.1;
-    } else {
-      centerY = mouseY;
-    }
-
-    if (dist(p.x, p.y, centerX, centerY) < ballRadius) {
-      colorR = random(200, 255);
-      colorG = random(0, 150);
-      colorB = random(0, 150);
-      ballRadius += 0.5;
-      trembleAngle += 0.2;
-    } else if (p.y + p.size / 2 > 0) {
-      newParticles[newParticles.length] = p;
-    }
-  }
-  particles = newParticles;
+function newParticle(x,y) {
+  particleX = random(0,800)
+  particleY = 500;
+  particleVY = random(-40, -5);
+  particleSize = random(5,80);
+  particleCol = color(random(150, 255), random(80, 200), random(120, 255));
 }
 
 function keyPressed() {
